@@ -1,0 +1,11 @@
+#!/bin/sh
+
+case $1 in
+    up)   amixer -q sset Master 2%+ ;;
+    down) amixer -q sset Master 2%- ;;
+    mute) amixer -q sset Master toggle ;;
+    *)
+        echo "usage: ${0##*/} (up|down|mute)" >&2
+        exit 1
+        ;;
+esac

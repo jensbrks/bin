@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if test $# -lt 3 || test "$3" -lt 0 2> /dev/null; then
+    echo "usage: ${0##*/} <string> <delim> <index>" >&2
+    exit 1
+fi
+
+str=$1
+
+while test ${i:-0} -le $3; do
+    sub=${str%%$2*}
+    str=${str#*$2}
+    i=$((i + 1))
+done
+
+printf %s "$sub"

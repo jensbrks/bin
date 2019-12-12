@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if ! pgrep X > /dev/null; then
+    echo "${0##*/}: X isn't running"
+    exit 1
+fi
+
+DIR=/tmp/calendar.lock
+
+cleanup() {
+    pkill -f ^n30f.*calendar.png
+    rm -rf $DIR
+}
+
+if mkdir $DIR 2> /dev/null; then
+    trap cleanup INT TERM
+
+    R=$(lsw -r)
+    SW=$(wattr w $R)
+    SH=$(($(wattr h $R) - BAR_HEIGHT))
+
+    # offset
+    OF=10
+
+    p=$DIR/calendar.png
+    t=$(date '+%d %B %Y'; cal | sed -n 2,7p)
+
+    magick $HOME/usr/img/popup/bg_normal.png \
+        -fill $CLR8 -gravity center \
+        -font "$(substr "$BITMAP" , 1)" \
+        -annotate 0 "$t" $p
+
+    s=$(magick $p -format %wx%h info:)
+    x=$((SW/2 - ${s%x*}/2))
+
+    $BAR_TOP \
+        && popup $x $((BAR_HEIGHT + OF)) $p u $((${s%x*}/2)) \
+        || popup $x $((SH - ${s#*x} - OF)) $p d $((${s%x*}/2))
+else
+    cleanup
+fi

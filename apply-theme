@@ -1,0 +1,56 @@
+#!/bin/sh -e
+
+while test -z "$THEME"; do
+    printf 'Specify theme: '
+    read -r THEME
+done
+
+. $HOME/.local/share/tpl/$THEME
+. $HOME/.config/wm/rc
+
+gen_pointers() {
+    exec magick \
+        -size 11x6 xc:none \
+        -fill $CLR15 -draw 'path "M0,5 5,0 10,5Z"' \
+        $HOME/usr/img/popup/pointer/up.png &
+
+    exec magick \
+        -size 6x11 xc:none \
+        -fill $CLR15 -draw 'path "M0,5 5,0 5,10Z"' \
+        $HOME/usr/img/popup/pointer/left.png &
+
+    exec magick \
+        -size 6x11 xc:none \
+        -fill $CLR15 -draw 'path "M0,0 0,10 5,5Z"' \
+        $HOME/usr/img/popup/pointer/right.png &
+
+    exec magick \
+        -size 11x6 xc:none \
+        -fill $CLR15 -draw 'path "M0,0 5,5 10,0Z"' \
+        $HOME/usr/img/popup/pointer/down.png &
+}
+
+gen_widgets() {
+    exec magick \
+        -size 146x146 xc:$FG \
+        -bordercolor $CLR15 -border 3 \
+        $HOME/usr/img/popup/bg_normal.png &
+
+    exec magick \
+        -size 171x171 xc:$FG \
+        -bordercolor $CLR15 -border 3 \
+        -fill $CLR8 -gravity center \
+        -font "$(substr "$BITMAP" , 1)" \
+        -annotate 0 'No album cover' \
+        $HOME/usr/img/popup/bg_cover.png &
+}
+
+mkdir -p $HOME/usr/img/popup/pointer
+gen_pointers 2> /dev/null &
+gen_widgets 2> /dev/null &
+
+THEME=$THEME $HOME/etc/setup
+exec xrdb $HOME/.Xresources 2> /dev/null &
+
+pkill bar
+exec bar &

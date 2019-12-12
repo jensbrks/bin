@@ -1,0 +1,52 @@
+#!/bin/sh
+
+usage() {
+    echo "usage: ${0##*/} <x> <y> <path> [(u|l|r|d) <pointer_offset>]" >&2
+    exit 1
+}
+
+if test $# -lt 3 || test ! "$1$2${5:-$4}" -ge 0 2> /dev/null; then
+    usage
+fi
+
+if test $# -gt 3; then
+    case $4 in
+        u)
+            p=$HOME/usr/img/popup/pointer/up.png
+            s=$(magick $p -format %[w]x%[h] info:)
+
+            x=$(($1 + $5 - ${s%x*}/2))
+            y=$(($2 - ${s#*x}))
+            ;;
+        l)
+            p=$HOME/usr/img/popup/pointer/left.png
+            s=$(magick $p -format %[w]x%[h] info:)
+
+            x=$(($1 - ${s%x*}))
+            y=$(($2 + $5 - ${s#*x}/2))
+            ;;
+        r)
+            p=$HOME/usr/img/popup/pointer/right.png
+            ph=$(magick $p -format %[h] info:)
+            iw=$(magick "$3" -format %[w] info:)
+
+            x=$(($1 + iw))
+            y=$(($2 + $5 - ph/2))
+            ;;
+        d)
+            p=$HOME/usr/img/popup/pointer/down.png
+            pw=$(magick $p -format %[w] info:)
+            ih=$(magick "$3" -format %[h] info:)
+
+            x=$(($1 + $5 - pw/2))
+            y=$(($2 + ih))
+            ;;
+        *)
+            usage
+            ;;
+    esac
+
+    n30f -x $x -y $y -d -t "${3##*/}-pointer" $p
+fi
+
+n30f -x $1 -y $2 -d -t "${3##*/}" "$3"

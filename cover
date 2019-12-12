@@ -1,0 +1,63 @@
+#!/bin/sh
+
+if ! pgrep X > /dev/null; then
+    echo "${0##*/}: X isn't running"
+    exit 1
+fi
+
+DIR=/tmp/cover.lock
+
+cleanup() {
+    pkill -f ^n30f.*cover.png
+    rm -rf $DIR
+
+    trap - INT TERM
+    pkill cover
+}
+
+extract() {
+    p=$DIR/cover.png
+    w=$((${s%x*} - BR*2))
+    h=$((${s#*x} - BR*2))
+
+    ffmpeg -loglevel 0 -i "$HOME/usr/mus/$1" -y -vf \
+        scale=$w:$h:force_original_aspect_ratio=increase,crop=$w:$h $p \
+    && popup $((OF + BR)) $((y + BR)) $p
+}
+
+{
+    if mkdir $DIR 2> /dev/null; then
+        trap cleanup INT TERM
+
+        SH=$(($(wattr h $(lsw -r)) - BAR_HEIGHT))
+
+        # offset, image border size
+        OF=10
+        BR=3
+
+        p=$HOME/usr/img/popup/bg_cover.png
+        s=$(magick $p -format %wx%h info:)
+        c=$(mpc current -f %file%)
+
+        if $BAR_TOP; then
+            y=$((BAR_HEIGHT + OF))
+            popup $OF $y $p u $((${s%x*}/2 + 3))
+        else
+            y=$((SH - ${s#*x} - OF))
+            popup $OF $y $p d $((${s%x*}/2 + 3))
+        fi
+
+        extract "$c"
+
+        # FIXME hangs when pkill'ed, because of --wait
+        while n=$(mpc current -f %file% --wait); do
+            if test "$c" != "${n:-$c}"; then
+                c=$n
+                pkill -f '^n30f.*-t cover.png'
+                extract "$c"
+            fi
+        done
+    fi
+
+    cleanup
+} &
