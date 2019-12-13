@@ -6,7 +6,7 @@ while test -z "$THEME"; do
 done
 
 . $HOME/.local/share/tpl/$THEME
-. $HOME/.config/wm/rc
+. $HOME/.config/wm/wm.conf
 
 gen_pointers() {
     exec magick \
