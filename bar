@@ -33,8 +33,8 @@ music() {
 
     if test -n "$s"; then
         case $(mpc -f '') in
-            *paused*) i='' ;;
-            *)        i='' ;;
+            *paused*) i= ;;
+            *)        i= ;;
         esac
 
         printf %s "%{B$clr1}  %{A:cover:}$i%{A} $s  %{B-}"
@@ -51,10 +51,10 @@ network() {
 
         # XXX are these representative ranges?
         case ${l%.} in
-            [1-9]|[12][0-9]|3[0-4]) i='' ;;
-            3[5-9]|[4-6][0-9])      i='' ;;
-            70)                     i='' ;;
-            *)                      i='' ;;
+            [1-9]|[12][0-9]|3[0-4]) i= ;;
+            3[5-9]|[4-6][0-9])      i= ;;
+            70)                     i= ;;
+            *)                      i= ;;
         esac
 
         printf %s "  %{F$clr2}$i%{F-} $s  "
@@ -67,12 +67,12 @@ volume() {
     v=${v%%%*}
 
     case $v in
-        [1-9]|[1-4][0-9]|50)   i='' ;;
-        5[1-9]|[6-9][0-9]|100) i='' ;;
-        *)                     i='' ;;
+        [1-9]|[1-4][0-9]|50)   i= ;;
+        5[1-9]|[6-9][0-9]|100) i= ;;
+        *)                     i= ;;
     esac
 
-    test "${m%%]*}" = '[off' && i=''
+    test "${m%%]*}" = [off && i=
     printf %s "%{B$clr1}  %{A:vol mute:}$i%{A} $v%%  %{B-}"
 }
 
@@ -81,9 +81,9 @@ battery() {
     c=$(cat /sys/class/power_supply/BAT0/capacity)
 
     case $m in
-        Discharging) i='' ;;
-        Charging)    i='' ;;
-        *)           i='' ;;
+        Discharging) i= ;;
+        Charging)    i= ;;
+        *)           i= ;;
     esac
 
     printf %s "%{B$clr2}  $i $c%%  %{B-}"
