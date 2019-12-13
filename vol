@@ -1,11 +1,16 @@
 #!/bin/sh
 
+if test "$1" -ge 0 2> /dev/null; then
+    amixer -q sset Master $1%
+    exit
+fi
+
 case $1 in
     up)   amixer -q sset Master 2%+ ;;
     down) amixer -q sset Master 2%- ;;
     mute) amixer -q sset Master toggle ;;
     *)
-        echo "usage: ${0##*/} (up|down|mute)" >&2
+        echo "usage: ${0##*/} (up|down|mute|<lvl>)" >&2
         exit 1
         ;;
 esac
