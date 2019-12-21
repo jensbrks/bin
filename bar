@@ -10,17 +10,10 @@ clr1=$CLR6
 clr2=$CLR14
 
 workspaces() {
-    for i in $(seq $WM_GROUPS); do
-        case $(group l) in
-            *$i*)
-                case $(group f $(pfw 2> /dev/null)) in
-                    *$i*) w="$w %{F$clr1}-%{F-} " ;;
-                    *)    w="$w - " ;;
-                esac
-                ;;
-            *)
-                w="$w + "
-                ;;
+    for i in $(seq $WM_WORKSPACES); do
+        case $(workspace c) in
+            $i) w="$w %{F$clr1}+%{F-} " ;;
+            *)  w="$w + " ;;
         esac
     done
 
