@@ -41,10 +41,10 @@ extract() {
 
         if $BAR_TOP; then
             y=$((BAR_HEIGHT + OF))
-            popup $OF $y $p u $((${s%x*}/2 + 3))
+            popup $OF $y $p -u $((${s%x*}/2 + 3))
         else
             y=$((SH - ${s#*x} - OF))
-            popup $OF $y $p d $((${s%x*}/2 + 3))
+            popup $OF $y $p -d $((${s%x*}/2 + 3))
         fi
 
         extract "$c"

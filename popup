@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usage() {
-    echo "usage: ${0##*/} X Y IMG [(u|l|r|d) POINTER_OFFSET]" >&2
+    echo "usage: ${0##*/} X Y IMG [-ulrd POINTER_OFFSET]" >&2
     exit 1
 }
 
@@ -11,21 +11,21 @@ fi
 
 if test $# -gt 3; then
     case $4 in
-        u)
+        -u)
             p=$HOME/usr/img/popup/pointer/up.png
             s=$(magick $p -format %[w]x%[h] info:)
 
             x=$(($1 + $5 - ${s%x*}/2))
             y=$(($2 - ${s#*x}))
             ;;
-        l)
+        -l)
             p=$HOME/usr/img/popup/pointer/left.png
             s=$(magick $p -format %[w]x%[h] info:)
 
             x=$(($1 - ${s%x*}))
             y=$(($2 + $5 - ${s#*x}/2))
             ;;
-        r)
+        -r)
             p=$HOME/usr/img/popup/pointer/right.png
             ph=$(magick $p -format %[h] info:)
             iw=$(magick "$3" -format %[w] info:)
@@ -33,7 +33,7 @@ if test $# -gt 3; then
             x=$(($1 + iw))
             y=$(($2 + $5 - ph/2))
             ;;
-        d)
+        -d)
             p=$HOME/usr/img/popup/pointer/down.png
             pw=$(magick $p -format %[w] info:)
             ih=$(magick "$3" -format %[h] info:)
