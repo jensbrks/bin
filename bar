@@ -6,18 +6,16 @@ if ! pgrep X > /dev/null; then
 fi
 
 $BAR_TOP || b=-b
-clr1=$CLR6
-clr2=$CLR14
 
 workspaces() {
     for i in $(seq $WM_WORKSPACES); do
         case $(workspace c) in
-            $i) w="$w %{F$clr1}+%{F-} " ;;
-            *)  w="$w + " ;;
+            $i) w="$w + " ;;
+            *)  w="$w - " ;;
         esac
     done
 
-    printf %s "%{B$clr2} $w %{B-}"
+    printf %s "%{B$CLR0} $w %{B-}"
 }
 
 music() {
@@ -30,12 +28,12 @@ music() {
             *)        i= ;;
         esac
 
-        printf %s "%{B$clr1}  %{A:cover:}$i%{A} $s  %{B-}"
+        printf %s "%{B$CLR8}  %{A:cover:}$i%{A} $s  %{B-}"
     fi
 }
 
 clock() {
-    printf %s "  %{A:calendar:}$(date +%R)%{A}  "
+    printf %s "  %{A:calendar:}$(date +%A\ %R)%{A}  "
 }
 
 network() {
@@ -50,7 +48,7 @@ network() {
             *)                      i= ;;
         esac
 
-        printf %s "  %{F$clr2}$i%{F-} $s  "
+        printf %s "%{B$CLR8}  $i $s  %{B-}"
     fi
 }
 
@@ -66,7 +64,7 @@ volume() {
     esac
 
     test "${m%%]*}" = [off && i=
-    printf %s "%{B$clr1}  %{A:vol t:}$i%{A} $v%%  %{B-}"
+    printf %s "%{B$CLR0}  %{A:vol t:}$i%{A} $v | "
 }
 
 battery() {
@@ -79,7 +77,7 @@ battery() {
         *)           i= ;;
     esac
 
-    printf %s "%{B$clr2}  $i $c%%  %{B-}"
+    printf %s "$i $c  %{B-}"
 }
 
 while true; do
