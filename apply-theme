@@ -5,6 +5,8 @@ while test -z "$THEME"; do
     read -r THEME
 done
 
+export THEME
+
 . $HOME/.local/share/tpl/$THEME
 . $HOME/.config/wm/wm.conf
 
