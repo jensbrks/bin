@@ -5,46 +5,46 @@ if ! pgrep X > /dev/null; then
     exit 1
 fi
 
-DIR=/tmp/cover.lock
+dir=/tmp/cover.lock
 
 cleanup() {
     pkill -f ^n30f.*cover.png
-    rm -rf $DIR
+    rm -rf $dir
 
     trap - INT TERM
     pkill cover
 }
 
 extract() {
-    p=$DIR/cover.png
-    w=$((${s%x*} - BR*2))
-    h=$((${s#*x} - BR*2))
+    p=$dir/cover.png
+    w=$((${s%x*} - br*2))
+    h=$((${s#*x} - br*2))
 
     ffmpeg -loglevel 0 -i "$HOME/usr/mus/$1" -y -vf \
         scale=$w:$h:force_original_aspect_ratio=increase,crop=$w:$h $p \
-    && popup $((OF + BR)) $((y + BR)) $p
+    && popup $((of + br)) $((y + br)) $p
 }
 
 {
-    if mkdir $DIR 2> /dev/null; then
+    if mkdir $dir 2> /dev/null; then
         trap cleanup INT TERM
 
-        SH=$(($(wattr h $(lsw -r)) - BAR_HEIGHT))
+        sh=$(($(wattr h $(lsw -r)) - BAR_HEIGHT))
 
         # offset, image border size
-        OF=10
-        BR=3
+        of=10
+        br=3
 
         p=$HOME/usr/img/popup/bg_cover.png
         s=$(magick $p -format %wx%h info:)
         c=$(mpc current -f %file%)
 
-        if $BAR_TOP; then
-            y=$((BAR_HEIGHT + OF))
-            popup $OF $y $p -u $((${s%x*}/2 + 3))
+        if test -n "$BAR_BOTTOM"; then
+            y=$((sh - ${s#*x} - of))
+            popup $of $y $p -d $((${s%x*}/2 + 3))
         else
-            y=$((SH - ${s#*x} - OF))
-            popup $OF $y $p -d $((${s%x*}/2 + 3))
+            y=$((BAR_HEIGHT + of))
+            popup $of $y $p -u $((${s%x*}/2 + 3))
         fi
 
         extract "$c"

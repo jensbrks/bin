@@ -5,8 +5,6 @@ if ! pgrep X > /dev/null; then
     exit 1
 fi
 
-$BAR_TOP || b=-b
-
 workspaces() {
     for i in $(seq $WM_WORKSPACES); do
         case $(workspace c) in
@@ -87,7 +85,7 @@ while true; do
         "%{r}$(network)$(volume)$(battery)"
     sleep .5s
 done | lemonbar \
-    -g x$BAR_HEIGHT -d $b \
+    -g x$BAR_HEIGHT -d ${BAR_BOTTOM:+-b} \
     -f "$(substr "$BITMAP" , 2)" \
     -f "$(substr "$BITMAP" , 1)" \
     -B$BG -F$FG \
